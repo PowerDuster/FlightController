@@ -1,13 +1,21 @@
 import threading
 import socket
-import serial
+import signal
+import os
 
 pitch=0
 yaw=0
 roll=0
 isConnected=False
+Run=True
 fly=False
 global addr
+
+def handler(sigtype, frame):
+	Run=False
+	os._exit(0)
+
+signal.signal(signal.SIGINT, handler)
 
 def controlServerThread():
     print('Control server running')
@@ -16,6 +24,7 @@ def controlServerThread():
     global pitch, yaw, roll, isConnected, addr
     while True:
         msg, addr = controlSock.recvfrom(16)
+		if msg
         print('Control signal received')
         isConnected=True
     
@@ -29,13 +38,13 @@ def flightServerThread():
         data = sock.recv(24)
 
 
-ser=serial.Serial('', 9600, timeout=0.01)
+#ser=serial.Serial('', 9600, timeout=0.01)
 
 cThread=threading.Thread(target=controlServerThread)
 cThread.start()
 
-while True:
-    sensorData=ser.readline
+while Run:
+    #sensorData=ser.readline
     #parse sensorData
     if isConnected:
         print(addr)
